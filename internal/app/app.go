@@ -2,7 +2,9 @@ package app
 
 import (
 	"context"
+	"errors"
 	"log"
+	"net/http"
 	"os"
 	"os/signal"
 	"refactoring/internal/config"
@@ -52,7 +54,7 @@ func Run(configDir string) {
 				log.Printf("panic occurred: %s\n", err)
 			}
 		}()
-		if err := srv.Run(); err != nil {
+		if err := srv.Run(); !errors.Is(err, http.ErrServerClosed) {
 			log.Println("error happened: ", err.Error())
 		}
 	}()

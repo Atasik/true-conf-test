@@ -35,7 +35,7 @@ func (h *Handler) initUserRoutes(api chi.Router) chi.Router {
 func (h *Handler) searchUsers(w http.ResponseWriter, r *http.Request) {
 	list, err := h.services.GetAll()
 	if err != nil {
-		render.Render(w, r, newErrResponse(err))
+		render.Render(w, r, ErrInvalidRequest(err)) //nolint:errcheck
 		return
 	}
 
@@ -64,7 +64,7 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 	request := createUserRequest{}
 
 	if err := render.Bind(r, &request); err != nil {
-		render.Render(w, r, newErrResponse(err))
+		render.Render(w, r, ErrInvalidRequest(err)) //nolint:errcheck
 		return
 	}
 
@@ -76,7 +76,7 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 
 	id, err := h.services.Create(u)
 	if err != nil {
-		render.Render(w, r, newErrResponse(err))
+		render.Render(w, r, ErrServerError(err)) //nolint:errcheck
 		return
 	}
 
@@ -97,13 +97,13 @@ func (h *Handler) createUser(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) getUser(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		render.Render(w, r, newErrResponse(err))
+		render.Render(w, r, ErrInvalidRequest(err)) //nolint:errcheck
 		return
 	}
 
 	user, err := h.services.GetByID(id)
 	if err != nil {
-		render.Render(w, r, newErrResponse(err))
+		render.Render(w, r, ErrServerError(err)) //nolint:errcheck
 		return
 	}
 
@@ -130,14 +130,14 @@ func (c *updateUserRequest) Bind(r *http.Request) error { return nil }
 func (h *Handler) updateUser(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		render.Render(w, r, newErrResponse(err))
+		render.Render(w, r, ErrInvalidRequest(err)) //nolint:errcheck
 		return
 	}
 
 	request := updateUserRequest{}
 
-	if err := render.Bind(r, &request); err != nil {
-		render.Render(w, r, newErrResponse(err))
+	if err = render.Bind(r, &request); err != nil {
+		render.Render(w, r, ErrInvalidRequest(err)) //nolint:errcheck
 		return
 	}
 
@@ -146,12 +146,12 @@ func (h *Handler) updateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = input.Validate(); err != nil {
-		render.Render(w, r, newErrResponse(err))
+		render.Render(w, r, ErrInvalidRequest(err)) //nolint:errcheck
 		return
 	}
 
 	if err = h.services.Update(id, input); err != nil {
-		render.Render(w, r, newErrResponse(err))
+		render.Render(w, r, ErrServerError(err)) //nolint:errcheck
 		return
 	}
 
@@ -170,12 +170,12 @@ func (h *Handler) updateUser(w http.ResponseWriter, r *http.Request) {
 func (h *Handler) deleteUser(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		render.Render(w, r, newErrResponse(err))
+		render.Render(w, r, ErrInvalidRequest(err)) //nolint:errcheck
 		return
 	}
 
 	if err = h.services.Delete(id); err != nil {
-		render.Render(w, r, newErrResponse(err))
+		render.Render(w, r, ErrServerError(err)) //nolint:errcheck
 		return
 	}
 

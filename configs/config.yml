@@ -1,7 +1,7 @@
 http:
   port: 3333
-  readTimeout: 10s
-  writeTimeout: 10s
+  readTimeout: 60s
+  writeTimeout: 60s
   maxHeaderMegaBytes: 1
 
 db:

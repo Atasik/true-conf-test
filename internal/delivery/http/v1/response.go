@@ -28,11 +28,20 @@ func (e *errResponse) Render(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func newErrResponse(err error) render.Renderer {
+func ErrInvalidRequest(err error) render.Renderer {
 	return &errResponse{
 		Err:            err,
-		HTTPStatusCode: 400,
+		HTTPStatusCode: http.StatusBadRequest,
 		StatusText:     "Invalid request.",
+		ErrorText:      err.Error(),
+	}
+}
+
+func ErrServerError(err error) render.Renderer {
+	return &errResponse{
+		Err:            err,
+		HTTPStatusCode: http.StatusInternalServerError,
+		StatusText:     "Server error.",
 		ErrorText:      err.Error(),
 	}
 }
