@@ -1,0 +1,215 @@
+basePath: /
+definitions:
+  domain.User:
+    properties:
+      created_at:
+        type: string
+      display_name:
+        type: string
+      email:
+        type: string
+    type: object
+  v1.createUserRequest:
+    properties:
+      display_name:
+        type: string
+      email:
+        type: string
+    type: object
+  v1.dataResponse:
+    properties:
+      data: {}
+    type: object
+  v1.errResponse:
+    properties:
+      code:
+        type: integer
+      error:
+        type: string
+      status:
+        type: string
+    type: object
+  v1.idResponse:
+    properties:
+      user_id: {}
+    type: object
+  v1.updateUserRequest:
+    properties:
+      display_name:
+        type: string
+    type: object
+host: localhost:3333
+info:
+  contact: {}
+  description: Тех. Задание TrueConf
+  title: TrueConf Backend Test
+  version: "2.0"
+paths:
+  /api/v1/users:
+    get:
+      operationId: search-users
+      responses:
+        "200":
+          description: userList
+          schema:
+            $ref: '#/definitions/v1.dataResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+      summary: Search Users
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      operationId: create-user
+      parameters:
+      - description: request form
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/v1.createUserRequest'
+      responses:
+        "201":
+          description: id
+          schema:
+            $ref: '#/definitions/v1.idResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+      summary: Create user
+      tags:
+      - user
+  /api/v1/users/{id}:
+    delete:
+      operationId: delete-user
+      parameters:
+      - description: ID of user
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: NoContent
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+      summary: Delete user
+      tags:
+      - user
+    get:
+      operationId: get-user
+      parameters:
+      - description: ID of user
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: user
+          schema:
+            $ref: '#/definitions/domain.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+      summary: Get user
+      tags:
+      - user
+    patch:
+      consumes:
+      - application/json
+      operationId: update-user
+      parameters:
+      - description: ID of user
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: update form
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/v1.updateUserRequest'
+      responses:
+        "204":
+          description: NoContent
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+        default:
+          description: ""
+          schema:
+            $ref: '#/definitions/v1.errResponse'
+      summary: Update user
+      tags:
+      - user
+swagger: "2.0"
