@@ -2,7 +2,6 @@ package repository
 
 import (
 	"encoding/json"
-	"io/fs"
 	"os"
 	"refactoring/internal/domain"
 )
@@ -25,18 +24,24 @@ func NewRepository(userRepo UserRepo) *Repository {
 	}
 }
 
-func readJSONFromFile(dir string, v any) error {
-	f, err := os.ReadFile(dir)
+func readJSONFromFile(dir string, v interface{}) error {
+	file, err := os.Open(dir)
 	if err != nil {
 		return err
 	}
-	return json.Unmarshal(f, v)
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	return decoder.Decode(v)
 }
 
-func writeJSONToFile(dir string, v any) error {
-	b, err := json.Marshal(v)
+func writeJSONToFile(dir string, v interface{}) error {
+	file, err := os.Create(dir)
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(dir, b, fs.ModePerm)
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	return encoder.Encode(v)
 }
